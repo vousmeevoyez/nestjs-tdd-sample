@@ -1,0 +1,38 @@
+service:
+  name: knowid-backend
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${file(./env.yml):STAGE}
+  region: ${file(./env.yml):REGION}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:${self:provider.stage}:*:*
+  environment:
+    AWS_DYNAMO_ACCESS_KEY_ID: ${file(./env.yml):AWS_DYNAMO_ACCESS_KEY_ID}
+    AWS_DYNAMO_SECRET_ACCESS_KEY: ${file(./env.yml):AWS_DYNAMO_SECRET_ACCESS_KEY}
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+functions:
+  index-function:
+    handler: src/index.handler
+    events:
+      - http:
+          cors: true
+          path: '{proxy+}'
+          method: any
+
+resources:
+  - ${file(resource/dynamodb.yml)}
