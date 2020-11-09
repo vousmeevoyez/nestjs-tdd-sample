@@ -22,8 +22,15 @@ provider:
     AWS_DYNAMO_SECRET_ACCESS_KEY: ${file(./env.yml):AWS_DYNAMO_SECRET_ACCESS_KEY}
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-webpack
   - serverless-offline
+
+custom:
+  webpack:
+    includeModules: true
+
+package:
+  individually: true
 
 functions:
   index-function:
