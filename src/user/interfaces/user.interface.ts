@@ -1,8 +1,4 @@
-export interface UserKey {
-  id?: string;
-}
-
-export interface User extends UserKey {
+export interface IUser {
   firstName: string;
   middleName?: string;
   lastName: string;
@@ -11,4 +7,6 @@ export interface User extends UserKey {
   phoneNo: string;
   password: string;
   status?: string;
+  generateHashPassword(): Promise<string>;
+  checkPassword(password: string): Promise<boolean>;
 }

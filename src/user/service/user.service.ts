@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import * as uuid from 'uuid';
-import { InjectModel, Model } from 'nestjs-dynamoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateUserDto } from '../dto/user.dto';
-import { UserStatus } from '../model/user.enum';
-import { User, UserKey } from '../interfaces/user.interface';
+import { User as UserModel, UserDocument } from '../model/user.model';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('user')
-    private readonly model: Model<User, UserKey>,
+    @InjectModel(UserModel.name)
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
-  findById(key: UserKey) {
-    return this.model.get(key);
+  async create(payload: CreateUserDto): Promise<UserDocument> {
+    const user = new this.userModel(payload);
+    await user.generateHashPassword();
+    return user.save();
   }
 
-  create(input: CreateUserDto) {
-    return this.model.create({
-      ...input,
-      id: uuid.v4(),
-      status: UserStatus.WAITING_VERIFICATION,
-    });
+  async findByPhoneNo(phoneNo: string): Promise<UserDocument | null> {
+    return this.userModel
+      .findOne({
+        phoneNo,
+      })
+      .exec();
+  }
+
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
   }
 }

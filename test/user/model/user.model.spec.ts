@@ -1,34 +1,26 @@
-import * as dynamoose from 'dynamoose';
-import { UserSchema } from '@/user/model/user.model';
-import { UserStatus } from '@/user/model/user.enum';
+import { Model, model } from 'mongoose';
+import { UserSchema, UserDocument } from '@/user/model/user.model';
+import { setupDatabase } from '../../test-utils';
+
+setupDatabase();
 
 describe('user.model', () => {
+  const userModel = model<UserDocument, Model<UserDocument>>(
+    'User',
+    UserSchema,
+  );
   test('make UserSchema is correct', async () => {
-    const UserModel = dynamoose.model('user', UserSchema);
     const parameters = {
       id: 'my-uuid',
       firstName: 'Kelvin',
-      middleName: 'D',
       lastName: 'Desman',
       email: 'kelvin@sample.com',
       phoneExt: '62',
       phoneNo: '812312313',
       password: 'password',
-      status: UserStatus.WAITING_VERIFICATION,
     };
-    const result = await UserModel.create(parameters);
-    expect(result).toContainAllKeys([
-      'id',
-      'firstName',
-      'middleName',
-      'lastName',
-      'email',
-      'phoneExt',
-      'phoneNo',
-      'password',
-      'status',
-      'createdAt',
-      'updatedAt',
-    ]);
+    const result = await userModel.create(parameters);
+    //@ts-ignore
+    expect(result).toHaveUserProperties();
   });
 });

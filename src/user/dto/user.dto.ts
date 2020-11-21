@@ -8,11 +8,10 @@ import {
   Length,
   IsNumberString,
 } from 'class-validator';
-import { User } from '../interfaces/user.interface';
 import { UserStatus } from '../model/user.enum';
 
 @InputType()
-export class CreateUserDto implements User {
+export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(50)

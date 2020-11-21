@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
-import { DynamooseModule } from 'nestjs-dynamoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { UserResolver } from './resolver/user.resolver';
-import { UserSchema } from './model/user.model';
+import { User, UserSchema } from './model/user.model';
 import { UserService } from './service/user.service';
 
-export const userDdm = DynamooseModule.forFeature([
+export const userMm = MongooseModule.forFeature([
   {
-    name: 'user',
+    name: User.name,
     schema: UserSchema,
   },
 ]);
 
 @Module({
-  imports: [userDdm],
+  imports: [userMm],
   providers: [UserService, UserResolver],
+  exports: [UserService],
 })
 export class UserModule {}

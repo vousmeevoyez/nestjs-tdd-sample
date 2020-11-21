@@ -18,10 +18,15 @@ const isPassOrFailed = (pass) => {
   }
 };
 
-export function toContainObject(received, argument) {
+export function toHaveUserProperties(received, argument) {
   const pass = this.equals(
-    received,
-    expect.arrayContaining([expect.objectContaining(argument)]),
+    expect(received).toHaveProperty('firstName'),
+    expect(received).toHaveProperty('lastName'),
+    expect(received).toHaveProperty('email'),
+    expect(received).toHaveProperty('phoneExt'),
+    expect(received).toHaveProperty('phoneNo'),
+    expect(received).toHaveProperty('password'),
+    expect(received).toHaveProperty('status'),
   );
   return isPassOrFailed(pass);
 }

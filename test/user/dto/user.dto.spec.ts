@@ -1,5 +1,4 @@
 import { validate } from 'class-validator';
-import { User } from '@/user/interfaces/user.interface';
 import { CreateUserDto } from '@/user/dto/user.dto';
 
 const cases = [
@@ -39,7 +38,7 @@ describe('CreateUserDto', () => {
   test.each(cases)(
     'given %p as as arguments, expect to returns %p errors',
     (parameters, expectedResult) => {
-      const mapParamsToDto = (parameters: User) => {
+      const mapParamsToDto = (parameters: CreateUserDto) => {
         for (const [key, value] of Object.entries(parameters)) {
           const property = key as keyof CreateUserDto;
           dto[property] = value;
